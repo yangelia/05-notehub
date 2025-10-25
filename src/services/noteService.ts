@@ -4,7 +4,10 @@ import type { Note, CreateNoteRequest } from "../types/note";
 export interface FetchNotesResponse {
   notes: Note[];
   totalPages: number;
-  page: number;
+}
+
+interface ApiNoteResponse {
+  note: Note;
 }
 
 export const fetchNotes = async (
@@ -12,19 +15,25 @@ export const fetchNotes = async (
   perPage: number = 12,
   query?: string
 ): Promise<FetchNotesResponse> => {
-  const params: Record<string, string | number> = { page, perPage };
-  if (query) params.query = query;
+  const params: Record<string, string | number> = {
+    page,
+    perPage,
+  };
 
-  const { data } = await api.get("/notes", { params });
+  if (query && query.trim()) {
+    params.search = query;
+  }
+
+  const { data } = await api.get<FetchNotesResponse>("/notes", { params });
   return data;
 };
 
 export const createNote = async (newNote: CreateNoteRequest): Promise<Note> => {
-  const { data } = await api.post("/notes", newNote);
-  return data;
+  const { data } = await api.post<ApiNoteResponse>("/notes", newNote);
+  return data.note;
 };
 
 export const deleteNote = async (id: string): Promise<Note> => {
-  const { data } = await api.delete(`/notes/${id}`);
-  return data;
+  const { data } = await api.delete<ApiNoteResponse>(`/notes/${id}`);
+  return data.note;
 };

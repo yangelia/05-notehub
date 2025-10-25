@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const BASE_URL = "https://notehub-public.goit.study/api";
+
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: BASE_URL,
   headers: {
     Authorization: `Bearer ${import.meta.env.VITE_NOTEHUB_TOKEN}`,
   },
