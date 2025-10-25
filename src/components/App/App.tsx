@@ -19,14 +19,12 @@ const App = () => {
   const [debouncedSearch] = useDebounce(search, 500);
   const queryClient = useQueryClient();
 
-  // 🧠 Fetch notes
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["notes", page, debouncedSearch],
     queryFn: () => fetchNotes(page, 12, debouncedSearch),
-    keepPreviousData: true,
+    placeholderData: (prev) => prev,
   });
 
-  // ✏️ Create note mutation
   const createNoteMutation = useMutation({
     mutationFn: createNote,
     onSuccess: () => {
@@ -35,7 +33,6 @@ const App = () => {
     },
   });
 
-  // 🗑️ Delete note mutation
   const deleteNoteMutation = useMutation({
     mutationFn: deleteNote,
     onSuccess: () => {
@@ -83,7 +80,10 @@ const App = () => {
 
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>
-          <NoteForm onSubmit={handleCreateNote} />
+          <NoteForm
+            onSubmit={handleCreateNote}
+            onClose={() => setIsModalOpen(false)}
+          />
         </Modal>
       )}
     </div>
