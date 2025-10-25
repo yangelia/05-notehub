@@ -6,10 +6,6 @@ export interface FetchNotesResponse {
   totalPages: number;
 }
 
-interface ApiNoteResponse {
-  note: Note;
-}
-
 export const fetchNotes = async (
   page: number = 1,
   perPage: number = 12,
@@ -29,11 +25,11 @@ export const fetchNotes = async (
 };
 
 export const createNote = async (newNote: CreateNoteRequest): Promise<Note> => {
-  const { data } = await api.post<ApiNoteResponse>("/notes", newNote);
-  return data.note;
+  const { data } = await api.post<Note>("/notes", newNote);
+  return data;
 };
 
 export const deleteNote = async (id: string): Promise<Note> => {
-  const { data } = await api.delete<ApiNoteResponse>(`/notes/${id}`);
-  return data.note;
+  const { data } = await api.delete<Note>(`/notes/${id}`);
+  return data;
 };
