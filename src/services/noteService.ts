@@ -1,5 +1,5 @@
 import { api } from "../api/axiosInstance";
-import { Note, CreateNoteRequest } from "../types/note";
+import type { Note, CreateNoteRequest } from "../types/note";
 
 export interface FetchNotesResponse {
   notes: Note[];
