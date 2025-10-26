@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useDebouncedCallback } from "use-debounce";
+import { keepPreviousData } from "@tanstack/react-query";
 import css from "./App.module.css";
 import { fetchNotes, createNote, deleteNote } from "../../services/noteService";
 import NoteList from "../NoteList/NoteList";
@@ -20,13 +21,16 @@ const App = () => {
 
   const debouncedSearchChange = useDebouncedCallback((value: string) => {
     setSearch(value);
-    setPage(1);
-  }, 500);
+  }, 1000);
 
-  const { data, isLoading, isError, error } = useQuery({
+  useEffect(() => {
+    setPage(1);
+  }, [search]);
+
+  const { data, isLoading, isError, error, isSuccess } = useQuery({
     queryKey: ["notes", page, search],
     queryFn: () => fetchNotes(page, search),
-    placeholderData: (prev) => prev,
+    placeholderData: keepPreviousData,
   });
 
   const createNoteMutation = useMutation({
@@ -47,7 +51,7 @@ const App = () => {
   const handleCreateNote = (noteData: {
     title: string;
     content: string;
-    tag: "Todo" | "Work" | "Personal" | "Meeting" | "Shopping";
+    tag: string;
   }) => {
     createNoteMutation.mutate(noteData);
   };
@@ -69,11 +73,14 @@ const App = () => {
       </header>
 
       {isLoading && <Loader />}
-      {isError && <ErrorMessage message={(error as Error).message} />}
+      {isError && (
+        <ErrorMessage message={error?.message || "Something went wrong"} />
+      )}
 
-      {data && (
+      {isSuccess && data && (
         <>
           <NoteList notes={data.notes} onDelete={handleDeleteNote} />
+
           {data.totalPages > 1 && (
             <Pagination
               currentPage={page}

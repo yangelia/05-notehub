@@ -1,18 +1,18 @@
+// components/NoteForm/NoteForm.tsx
 import { useState } from "react";
 import css from "./NoteForm.module.css";
-import type { CreateNoteRequest, NoteTag } from "../../types/note";
 
 interface NoteFormProps {
-  onSubmit: (note: CreateNoteRequest) => void;
+  onSubmit: (note: { title: string; content: string; tag: string }) => void;
   onClose: () => void;
 }
 
-const tags: NoteTag[] = ["Todo", "Work", "Personal", "Meeting", "Shopping"];
+const tags = ["Todo", "Work", "Personal", "Meeting", "Shopping"];
 
 const NoteForm = ({ onSubmit, onClose }: NoteFormProps) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [tag, setTag] = useState<NoteTag>("Todo");
+  const [tag, setTag] = useState("Todo");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +54,7 @@ const NoteForm = ({ onSubmit, onClose }: NoteFormProps) => {
         <select
           className={css.select}
           value={tag}
-          onChange={(e) => setTag(e.target.value as NoteTag)}
+          onChange={(e) => setTag(e.target.value)}
         >
           {tags.map((t) => (
             <option key={t} value={t}>
