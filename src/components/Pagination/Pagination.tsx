@@ -16,22 +16,33 @@ const Pagination = ({
     onPageChange(event.selected + 1);
   };
 
+  if (totalPages <= 1) {
+    return null;
+  }
+
   return (
     <ReactPaginate
       breakLabel="..."
-      nextLabel="next >"
+      nextLabel="›"
+      previousLabel="‹"
       onPageChange={handlePageClick}
-      pageRangeDisplayed={5}
+      pageRangeDisplayed={3}
+      marginPagesDisplayed={1}
       pageCount={totalPages}
-      previousLabel="< previous"
       renderOnZeroPageCount={null}
       forcePage={currentPage - 1}
+      // Классы для контейнеров
       containerClassName={css.pagination}
+      pageClassName={css.pageItem}
       pageLinkClassName={css.pageLink}
+      previousClassName={css.pageItem}
       previousLinkClassName={css.pageLink}
+      nextClassName={css.pageItem}
       nextLinkClassName={css.pageLink}
-      activeLinkClassName={css.active}
-      disabledLinkClassName={css.disabled}
+      breakClassName={css.pageItem}
+      breakLinkClassName={css.pageLink}
+      activeClassName={css.active}
+      disabledClassName={css.disabled}
     />
   );
 };
