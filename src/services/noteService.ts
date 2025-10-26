@@ -80,10 +80,8 @@ export const createNote = async (note: {
 };
 
 export const deleteNote = async (id: string): Promise<void> => {
-  try {
-    await axios.delete(`${API_URL}/${id}`, { headers });
-  } catch (err) {
-    console.error("deleteNote error:", err);
-    throw err;
-  }
+  const url = `${API_URL}/${id}`;
+  console.log("Calling DELETE:", url);
+  await axios.delete(url, { headers });
+  console.log("DELETE request finished for id:", id);
 };

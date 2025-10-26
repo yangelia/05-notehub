@@ -52,7 +52,9 @@ const App = () => {
 
   const deleteNoteMutation = useMutation({
     mutationFn: deleteNote,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notes"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notes"], exact: false });
+    },
     onError: (err: AxiosError<{ message?: string }>) => {
       alert(err.response?.data?.message ?? err.message);
     },
@@ -68,9 +70,16 @@ const App = () => {
   };
 
   const handleDeleteNote = (id: string) => {
-    console.log("delete requested id:", id);
+    console.log("Delete requested id:", id);
     if (confirm("Delete this note?")) {
-      deleteNoteMutation.mutate(id);
+      deleteNoteMutation.mutate(id, {
+        onSuccess: () => {
+          console.log("Delete success for id:", id);
+        },
+        onError: (err) => {
+          console.error("Delete failed for id:", id, err);
+        },
+      });
     }
   };
 
