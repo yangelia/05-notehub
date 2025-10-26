@@ -25,7 +25,7 @@ const App = () => {
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["notes", page, search],
-    queryFn: () => fetchNotes(page, 12, search),
+    queryFn: () => fetchNotes(page, search),
     placeholderData: (prev) => prev,
   });
 
