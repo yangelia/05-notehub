@@ -19,8 +19,15 @@ export const fetchNotes = async (
   search: string = "",
   perPage: number = 12
 ): Promise<FetchNotesResponse> => {
+  const params = new URLSearchParams();
+  params.append("page", page.toString());
+  params.append("perPage", perPage.toString());
+  if (search) {
+    params.append("search", search);
+  }
+
   const res = await axios.get<FetchNotesResponse>(
-    `${API_URL}?search=${search}&page=${page}&perPage=${perPage}`,
+    `${API_URL}?${params.toString()}`,
     { headers }
   );
   return res.data;

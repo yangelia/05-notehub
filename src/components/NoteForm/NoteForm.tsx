@@ -1,77 +1,107 @@
-import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import css from "./NoteForm.module.css";
+import { createNote } from "../../services/noteService";
+import type { CreateNoteRequest } from "../../types/note";
 
 interface NoteFormProps {
-  onSubmit: (note: { title: string; content: string; tag: string }) => void;
   onClose: () => void;
 }
 
 const tags = ["Todo", "Work", "Personal", "Meeting", "Shopping"];
 
-const NoteForm = ({ onSubmit, onClose }: NoteFormProps) => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [tag, setTag] = useState("Todo");
+const validationSchema = Yup.object({
+  title: Yup.string().required("Title is required"),
+  content: Yup.string().required("Content is required"),
+  tag: Yup.string().oneOf(tags).required("Tag is required"),
+});
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title.trim()) return;
-    onSubmit({ title, content, tag });
+const NoteForm = ({ onClose }: NoteFormProps) => {
+  const queryClient = useQueryClient();
 
-    setTitle("");
-    setContent("");
-    setTag("Todo");
+  const createNoteMutation = useMutation({
+    mutationFn: createNote,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+      onClose();
+    },
+  });
+
+  const initialValues: CreateNoteRequest = {
+    title: "",
+    content: "",
+    tag: "Todo",
   };
 
   return (
-    <form className={css.form} onSubmit={handleSubmit}>
-      <h2>Create new note</h2>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={(values, { setSubmitting }) => {
+        createNoteMutation.mutate(values, {
+          onSettled: () => {
+            setSubmitting(false);
+          },
+        });
+      }}
+    >
+      {({ isSubmitting }) => (
+        <Form className={css.form}>
+          <h2>Create new note</h2>
 
-      <div className={css.formGroup}>
-        <label>Title</label>
-        <input
-          className={css.input}
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-      </div>
+          <div className={css.formGroup}>
+            <label htmlFor="title">Title</label>
+            <Field id="title" name="title" type="text" className={css.input} />
+            <ErrorMessage name="title" component="div" className={css.error} />
+          </div>
 
-      <div className={css.formGroup}>
-        <label>Content</label>
-        <textarea
-          className={css.textarea}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          required
-        />
-      </div>
+          <div className={css.formGroup}>
+            <label htmlFor="content">Content</label>
+            <Field
+              as="textarea"
+              id="content"
+              name="content"
+              className={css.textarea}
+            />
+            <ErrorMessage
+              name="content"
+              component="div"
+              className={css.error}
+            />
+          </div>
 
-      <div className={css.formGroup}>
-        <label>Tag</label>
-        <select
-          className={css.select}
-          value={tag}
-          onChange={(e) => setTag(e.target.value)}
-        >
-          {tags.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
-      </div>
+          <div className={css.formGroup}>
+            <label htmlFor="tag">Tag</label>
+            <Field as="select" id="tag" name="tag" className={css.select}>
+              {tags.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </Field>
+            <ErrorMessage name="tag" component="div" className={css.error} />
+          </div>
 
-      <div className={css.actions}>
-        <button type="submit" className={css.submitButton}>
-          Save
-        </button>
-        <button type="button" onClick={onClose} className={css.cancelButton}>
-          Cancel
-        </button>
-      </div>
-    </form>
+          <div className={css.actions}>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={css.submitButton}
+            >
+              Create note
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className={css.cancelButton}
+            >
+              Cancel
+            </button>
+          </div>
+        </Form>
+      )}
+    </Formik>
   );
 };
 

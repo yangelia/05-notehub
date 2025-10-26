@@ -1,3 +1,4 @@
+import ReactPaginate from "react-paginate";
 import css from "./Pagination.module.css";
 
 interface PaginationProps {
@@ -11,44 +12,27 @@ const Pagination = ({
   totalPages,
   onPageChange,
 }: PaginationProps) => {
-  const handlePrev = () => currentPage > 1 && onPageChange(currentPage - 1);
-  const handleNext = () =>
-    currentPage < totalPages && onPageChange(currentPage + 1);
-
-  const getPageNumbers = () => {
-    const pages = [];
-    for (let i = 1; i <= totalPages; i++) {
-      pages.push(i);
-    }
-    return pages;
+  const handlePageClick = (event: { selected: number }) => {
+    onPageChange(event.selected + 1);
   };
 
   return (
-    <ul className={css.pagination}>
-      <li
-        className={currentPage === 1 ? css.disabled : ""}
-        onClick={handlePrev}
-      >
-        <a>‹</a>
-      </li>
-
-      {getPageNumbers().map((page) => (
-        <li
-          key={page}
-          className={page === currentPage ? css.active : ""}
-          onClick={() => onPageChange(page)}
-        >
-          <a>{page}</a>
-        </li>
-      ))}
-
-      <li
-        className={currentPage === totalPages ? css.disabled : ""}
-        onClick={handleNext}
-      >
-        <a>›</a>
-      </li>
-    </ul>
+    <ReactPaginate
+      breakLabel="..."
+      nextLabel="next >"
+      onPageChange={handlePageClick}
+      pageRangeDisplayed={5}
+      pageCount={totalPages}
+      previousLabel="< previous"
+      renderOnZeroPageCount={null}
+      forcePage={currentPage - 1}
+      containerClassName={css.pagination}
+      pageLinkClassName={css.pageLink}
+      previousLinkClassName={css.pageLink}
+      nextLinkClassName={css.pageLink}
+      activeLinkClassName={css.active}
+      disabledLinkClassName={css.disabled}
+    />
   );
 };
 
