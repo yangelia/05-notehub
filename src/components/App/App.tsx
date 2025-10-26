@@ -21,6 +21,11 @@ const App = () => {
 
   const queryClient = useQueryClient();
 
+  // Функция очистки поиска
+  const handleClearSearch = () => {
+    setSearch("");
+  };
+
   const debouncedSearchChange = useDebouncedCallback((value: string) => {
     setSearch(value);
   }, 300);
@@ -86,7 +91,11 @@ const App = () => {
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
-        <SearchBox value={search} onChange={debouncedSearchChange} />
+        <SearchBox
+          value={search}
+          onChange={debouncedSearchChange}
+          onClear={handleClearSearch}
+        />
         {isSuccess && data && data.totalPages > 1 && (
           <Pagination
             currentPage={page}
