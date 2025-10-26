@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useDebouncedCallback } from "use-debounce";
 import { keepPreviousData } from "@tanstack/react-query";
 import css from "./App.module.css";
 import { fetchNotes, createNote, deleteNote } from "../../services/noteService";
@@ -13,17 +14,6 @@ import Pagination from "../Pagination/Pagination";
 import NoteForm from "../NoteForm/NoteForm";
 import Modal from "../Modal/Modal";
 
-function useDebounce<T>(value: T, delay = 500): T {
-  const [debounced, setDebounced] = useState(value);
-
-  useEffect(() => {
-    const handler = setTimeout(() => setDebounced(value), delay);
-    return () => clearTimeout(handler);
-  }, [value, delay]);
-
-  return debounced;
-}
-
 const App = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -31,15 +21,17 @@ const App = () => {
 
   const queryClient = useQueryClient();
 
-  const debouncedSearch = useDebounce(search, 500);
+  const debouncedSearchChange = useDebouncedCallback((value: string) => {
+    setSearch(value);
+  }, 300);
 
   useEffect(() => {
     setPage(1);
-  }, [debouncedSearch]);
+  }, [search]);
 
   const { data, isLoading, isError, error, isSuccess } = useQuery({
-    queryKey: ["notes", page, debouncedSearch],
-    queryFn: () => fetchNotes(page, debouncedSearch),
+    queryKey: ["notes", page, search],
+    queryFn: () => fetchNotes(page, search),
     placeholderData: keepPreviousData,
   });
 
@@ -94,7 +86,7 @@ const App = () => {
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
-        <SearchBox value={search} onChange={setSearch} />
+        <SearchBox value={search} onChange={debouncedSearchChange} />
         {isSuccess && data && data.totalPages > 1 && (
           <Pagination
             currentPage={page}
