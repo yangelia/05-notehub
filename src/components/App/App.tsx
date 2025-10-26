@@ -86,25 +86,28 @@ const App = () => {
   return (
     <div className={css.container}>
       <header className={css.header}>
+        <h1 className={css.title}>NoteHub</h1> {/* Добавьте заголовок */}
         <SearchBox value={search} onChange={debouncedSearchChange} />
-
-        {isSuccess && data && (
-          <>
-            <NoteList notes={data.notes} onDelete={handleDeleteNote} />
-            {data.totalPages > 1 && (
-              <Pagination
-                currentPage={page}
-                totalPages={data.totalPages}
-                onPageChange={setPage}
-              />
-            )}
-          </>
+        {isSuccess && data && data.totalPages > 1 && (
+          <Pagination
+            currentPage={page}
+            totalPages={data.totalPages}
+            onPageChange={setPage}
+          />
         )}
-
         <button className={css.addBtn} onClick={() => setIsModalOpen(true)}>
           + Create Note
         </button>
       </header>
+
+      {isLoading && <Loader />}
+      {isError && (
+        <ErrorMessage message={error?.message || "Something went wrong"} />
+      )}
+
+      {isSuccess && data && (
+        <NoteList notes={data.notes} onDelete={handleDeleteNote} />
+      )}
 
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>
@@ -113,10 +116,6 @@ const App = () => {
             onClose={() => setIsModalOpen(false)}
           />
         </Modal>
-      )}
-      {isLoading && <Loader />}
-      {isError && (
-        <ErrorMessage message={error?.message || "Something went wrong"} />
       )}
     </div>
   );
