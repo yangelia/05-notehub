@@ -75,42 +75,44 @@ const App = () => {
   };
 
   return (
-    <div className={css.container}>
-      <header className={css.header}>
-        <h1 className={css.title}>NoteHub</h1>
-        <SearchBox value={search} onChange={debouncedSearchChange} />
-        <button className={css.addBtn} onClick={() => setIsModalOpen(true)}>
-          + Add Note
-        </button>
-      </header>
+    <div style={{ border: "2px dashed red", padding: 10 }}>
+      <div className={css.container}>
+        <header className={css.header}>
+          <h1 className={css.title}>NoteHub</h1>
+          <SearchBox value={search} onChange={debouncedSearchChange} />
+          <button className={css.addBtn} onClick={() => setIsModalOpen(true)}>
+            + Add Note
+          </button>
+        </header>
 
-      {isLoading && <Loader />}
-      {isError && (
-        <ErrorMessage message={error?.message || "Something went wrong"} />
-      )}
+        {isLoading && <Loader />}
+        {isError && (
+          <ErrorMessage message={error?.message || "Something went wrong"} />
+        )}
 
-      {isSuccess && data && (
-        <>
-          <NoteList notes={data.notes} onDelete={handleDeleteNote} />
+        {isSuccess && data && (
+          <>
+            <NoteList notes={data.notes} onDelete={handleDeleteNote} />
 
-          {data.totalPages > 1 && (
-            <Pagination
-              currentPage={page}
-              totalPages={data.totalPages}
-              onPageChange={setPage}
+            {data.totalPages > 1 && (
+              <Pagination
+                currentPage={page}
+                totalPages={data.totalPages}
+                onPageChange={setPage}
+              />
+            )}
+          </>
+        )}
+
+        {isModalOpen && (
+          <Modal onClose={() => setIsModalOpen(false)}>
+            <NoteForm
+              onSubmit={handleCreateNote}
+              onClose={() => setIsModalOpen(false)}
             />
-          )}
-        </>
-      )}
-
-      {isModalOpen && (
-        <Modal onClose={() => setIsModalOpen(false)}>
-          <NoteForm
-            onSubmit={handleCreateNote}
-            onClose={() => setIsModalOpen(false)}
-          />
-        </Modal>
-      )}
+          </Modal>
+        )}
+      </div>
     </div>
   );
 };
