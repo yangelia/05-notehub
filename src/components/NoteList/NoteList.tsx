@@ -14,18 +14,15 @@ const NoteList = ({ notes, onDelete }: NoteListProps) => {
   return (
     <ul className={css.list}>
       {notes.map((note) => (
-        <li key={note.id} className={css.item}>
-          <div className={css.header}>
-            <h3 className={css.title}>{note.title}</h3>
-            <button className={css.deleteBtn} onClick={() => onDelete(note.id)}>
-              ✕
+        <li key={note.id} className={css.listItem}>
+          <h2 className={css.title}>{note.title}</h2>
+          <p className={css.content}>{note.content}</p>
+          <div className={css.footer}>
+            <span className={css.tag}>{note.tag}</span>
+            <button className={css.button} onClick={() => onDelete(note.id)}>
+              Delete
             </button>
           </div>
-          <p className={css.content}>{note.content}</p>
-          <span className={css.tag}>{note.tag}</span>
-          <time className={css.date}>
-            {new Date(note.createdAt).toLocaleDateString()}
-          </time>
         </li>
       ))}
     </ul>

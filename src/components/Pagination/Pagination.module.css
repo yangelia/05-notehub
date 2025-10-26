@@ -45,3 +45,12 @@
   color: #fff !important;
   font-weight: 500;
 }
+
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+}
+
+.disabled:hover {
+  background-color: transparent !important;
+}

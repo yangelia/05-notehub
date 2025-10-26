@@ -15,18 +15,40 @@ const Pagination = ({
   const handleNext = () =>
     currentPage < totalPages && onPageChange(currentPage + 1);
 
+  const getPageNumbers = () => {
+    const pages = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
+  };
+
   return (
-    <div className={css.pagination}>
-      <button onClick={handlePrev} disabled={currentPage === 1}>
-        Prev
-      </button>
-      <span>
-        {currentPage} / {totalPages}
-      </span>
-      <button onClick={handleNext} disabled={currentPage === totalPages}>
-        Next
-      </button>
-    </div>
+    <ul className={css.pagination}>
+      <li
+        className={currentPage === 1 ? css.disabled : ""}
+        onClick={handlePrev}
+      >
+        <a>‹</a>
+      </li>
+
+      {getPageNumbers().map((page) => (
+        <li
+          key={page}
+          className={page === currentPage ? css.active : ""}
+          onClick={() => onPageChange(page)}
+        >
+          <a>{page}</a>
+        </li>
+      ))}
+
+      <li
+        className={currentPage === totalPages ? css.disabled : ""}
+        onClick={handleNext}
+      >
+        <a>›</a>
+      </li>
+    </ul>
   );
 };
 

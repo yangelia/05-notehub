@@ -84,9 +84,9 @@ const App = () => {
   };
 
   return (
-    <div className={css.container}>
-      <header className={css.header}>
-        <h1 className={css.title}>NoteHub</h1> {/* Добавьте заголовок */}
+    <div className={css.app}>
+      <header className={css.toolbar}>
+        <h1>NoteHub</h1>
         <SearchBox value={search} onChange={debouncedSearchChange} />
         {isSuccess && data && data.totalPages > 1 && (
           <Pagination
@@ -95,7 +95,7 @@ const App = () => {
             onPageChange={setPage}
           />
         )}
-        <button className={css.addBtn} onClick={() => setIsModalOpen(true)}>
+        <button className={css.addButton} onClick={() => setIsModalOpen(true)}>
           + Create Note
         </button>
       </header>

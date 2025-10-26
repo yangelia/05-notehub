@@ -1,4 +1,3 @@
-// components/NoteForm/NoteForm.tsx
 import { useState } from "react";
 import css from "./NoteForm.module.css";
 
@@ -22,15 +21,14 @@ const NoteForm = ({ onSubmit, onClose }: NoteFormProps) => {
     setTitle("");
     setContent("");
     setTag("Todo");
-    // onClose();
   };
 
   return (
     <form className={css.form} onSubmit={handleSubmit}>
-      <h2 className={css.heading}>Create new note</h2>
+      <h2>Create new note</h2>
 
-      <label className={css.label}>
-        Title
+      <div className={css.formGroup}>
+        <label>Title</label>
         <input
           className={css.input}
           type="text"
@@ -38,20 +36,20 @@ const NoteForm = ({ onSubmit, onClose }: NoteFormProps) => {
           onChange={(e) => setTitle(e.target.value)}
           required
         />
-      </label>
+      </div>
 
-      <label className={css.label}>
-        Content
+      <div className={css.formGroup}>
+        <label>Content</label>
         <textarea
           className={css.textarea}
           value={content}
           onChange={(e) => setContent(e.target.value)}
           required
         />
-      </label>
+      </div>
 
-      <label className={css.label}>
-        Tag
+      <div className={css.formGroup}>
+        <label>Tag</label>
         <select
           className={css.select}
           value={tag}
@@ -63,13 +61,13 @@ const NoteForm = ({ onSubmit, onClose }: NoteFormProps) => {
             </option>
           ))}
         </select>
-      </label>
+      </div>
 
       <div className={css.actions}>
-        <button type="submit" className={css.button}>
+        <button type="submit" className={css.submitButton}>
           Save
         </button>
-        <button type="button" onClick={onClose} className={css.cancel}>
+        <button type="button" onClick={onClose} className={css.cancelButton}>
           Cancel
         </button>
       </div>

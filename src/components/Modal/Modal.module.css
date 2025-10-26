@@ -20,3 +20,17 @@
   position: relative;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
+
+.searchBox {
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  flex: 1;
+  max-width: 240px;
+  padding: 6px 12px;
+  font-size: 16px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+}

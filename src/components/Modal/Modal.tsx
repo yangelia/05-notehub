@@ -26,16 +26,23 @@ export default function Modal({ onClose, children }: ModalProps) {
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
+    document.body.style.overflow = "hidden";
+
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = prevOverflow;
     };
   }, [onClose]);
 
-  const modalRoot =
-    (typeof document !== "undefined" &&
-      (document.getElementById("modal-root") || document.body)) ||
-    null;
+  useEffect(() => {
+    if (!document.getElementById("modal-root")) {
+      const modalRoot = document.createElement("div");
+      modalRoot.id = "modal-root";
+      document.body.appendChild(modalRoot);
+    }
+  }, []);
+
+  const modalRoot = document.getElementById("modal-root");
 
   if (!modalRoot) return null;
 

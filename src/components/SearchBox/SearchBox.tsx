@@ -7,13 +7,15 @@ interface SearchBoxProps {
 
 const SearchBox = ({ value, onChange }: SearchBoxProps) => {
   return (
-    <input
-      className={css.input}
-      type="text"
-      placeholder="Search notes"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-    />
+    <div className={css.searchBox}>
+      <input
+        className={css.input}
+        type="text"
+        placeholder="Search notes..."
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </div>
   );
 };
 
