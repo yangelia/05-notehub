@@ -84,25 +84,13 @@ const App = () => {
   };
 
   return (
-    <div style={{ border: "2px dashed red", padding: 10 }}>
-      <div className={css.container}>
-        <header className={css.header}>
-          <h1 className={css.title}>NoteHub</h1>
-          <SearchBox value={search} onChange={debouncedSearchChange} />
-          <button className={css.addBtn} onClick={() => setIsModalOpen(true)}>
-            + Add Note
-          </button>
-        </header>
-
-        {isLoading && <Loader />}
-        {isError && (
-          <ErrorMessage message={error?.message || "Something went wrong"} />
-        )}
+    <div className={css.container}>
+      <header className={css.header}>
+        <SearchBox value={search} onChange={debouncedSearchChange} />
 
         {isSuccess && data && (
           <>
             <NoteList notes={data.notes} onDelete={handleDeleteNote} />
-
             {data.totalPages > 1 && (
               <Pagination
                 currentPage={page}
@@ -113,15 +101,23 @@ const App = () => {
           </>
         )}
 
-        {isModalOpen && (
-          <Modal onClose={() => setIsModalOpen(false)}>
-            <NoteForm
-              onSubmit={handleCreateNote}
-              onClose={() => setIsModalOpen(false)}
-            />
-          </Modal>
-        )}
-      </div>
+        <button className={css.addBtn} onClick={() => setIsModalOpen(true)}>
+          + Create Note
+        </button>
+      </header>
+
+      {isModalOpen && (
+        <Modal onClose={() => setIsModalOpen(false)}>
+          <NoteForm
+            onSubmit={handleCreateNote}
+            onClose={() => setIsModalOpen(false)}
+          />
+        </Modal>
+      )}
+      {isLoading && <Loader />}
+      {isError && (
+        <ErrorMessage message={error?.message || "Something went wrong"} />
+      )}
     </div>
   );
 };
