@@ -23,7 +23,7 @@ const App = () => {
 
   const debouncedSearchChange = useDebouncedCallback((value: string) => {
     setSearch(value);
-  }, 1000);
+  }, 300);
 
   useEffect(() => {
     setPage(1);
