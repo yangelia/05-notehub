@@ -4,8 +4,10 @@ import type { Note } from "../types/note";
 const API_URL = "https://notehub-public.goit.study/api/notes";
 const token = import.meta.env.VITE_NOTEHUB_TOKEN;
 
+console.log("NOTEHUB token present:", !!token);
+
 const headers = {
-  Authorization: `Bearer ${token}`,
+  Authorization: token ? `Bearer ${token}` : "",
   "Content-Type": "application/json",
 };
 
@@ -35,20 +37,23 @@ export const fetchNotes = async (
   const url = `${API_URL}?page=${page}&perPage=12${
     query ? `&search=${encodeURIComponent(query)}` : ""
   }`;
-
-  const { data } = await axios.get<NotesApiResponse>(url, { headers });
-
-  return {
-    notes: data.notes.map((note) => ({
-      id: note._id,
-      title: note.title,
-      content: note.content,
-      tag: note.tag,
-      createdAt: note.createdAt,
-      updatedAt: note.updatedAt,
-    })),
-    totalPages: data.totalPages,
-  };
+  try {
+    const { data } = await axios.get<NotesApiResponse>(url, { headers });
+    return {
+      notes: data.notes.map((note) => ({
+        id: note._id,
+        title: note.title,
+        content: note.content,
+        tag: note.tag,
+        createdAt: note.createdAt,
+        updatedAt: note.updatedAt,
+      })),
+      totalPages: data.totalPages,
+    };
+  } catch (err) {
+    console.error("fetchNotes error:", err);
+    throw err;
+  }
 };
 
 export const createNote = async (note: {
@@ -56,20 +61,29 @@ export const createNote = async (note: {
   content: string;
   tag: string;
 }): Promise<Note> => {
-  const { data } = await axios.post<NoteApiResponse>(API_URL, note, {
-    headers,
-  });
-
-  return {
-    id: data._id,
-    title: data.title,
-    content: data.content,
-    tag: data.tag,
-    createdAt: data.createdAt,
-    updatedAt: data.updatedAt,
-  };
+  try {
+    const { data } = await axios.post<NoteApiResponse>(API_URL, note, {
+      headers,
+    });
+    return {
+      id: data._id,
+      title: data.title,
+      content: data.content,
+      tag: data.tag,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
+    };
+  } catch (err) {
+    console.error("createNote error:", err);
+    throw err;
+  }
 };
 
 export const deleteNote = async (id: string): Promise<void> => {
-  await axios.delete(`${API_URL}/${id}`, { headers });
+  try {
+    await axios.delete(`${API_URL}/${id}`, { headers });
+  } catch (err) {
+    console.error("deleteNote error:", err);
+    throw err;
+  }
 };

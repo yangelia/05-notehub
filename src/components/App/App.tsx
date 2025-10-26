@@ -5,6 +5,8 @@ import { keepPreviousData } from "@tanstack/react-query";
 import css from "./App.module.css";
 import { fetchNotes, createNote, deleteNote } from "../../services/noteService";
 import NoteList from "../NoteList/NoteList";
+import type { Note } from "../../types/note";
+import type { AxiosError } from "axios";
 import SearchBox from "../SearchBox/SearchBox";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
@@ -33,18 +35,26 @@ const App = () => {
     placeholderData: keepPreviousData,
   });
 
-  const createNoteMutation = useMutation({
+  const createNoteMutation = useMutation<
+    Note,
+    AxiosError,
+    { title: string; content: string; tag: string }
+  >({
     mutationFn: createNote,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
       setIsModalOpen(false);
     },
+    onError: (err) => {
+      console.error("Error creating note:", err.message);
+    },
   });
 
   const deleteNoteMutation = useMutation({
     mutationFn: deleteNote,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notes"] }),
+    onError: (err: AxiosError<{ message?: string }>) => {
+      alert(err.response?.data?.message ?? err.message);
     },
   });
 
@@ -53,10 +63,12 @@ const App = () => {
     content: string;
     tag: string;
   }) => {
+    console.log("createNote payload:", noteData);
     createNoteMutation.mutate(noteData);
   };
 
   const handleDeleteNote = (id: string) => {
+    console.log("delete requested id:", id);
     if (confirm("Delete this note?")) {
       deleteNoteMutation.mutate(id);
     }

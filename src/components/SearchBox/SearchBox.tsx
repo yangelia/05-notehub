@@ -11,7 +11,7 @@ const SearchBox = ({ value, onChange }: SearchBoxProps) => {
       className={css.input}
       type="text"
       placeholder="Search notes"
-      defaultValue={value}
+      value={value}
       onChange={(e) => onChange(e.target.value)}
     />
   );

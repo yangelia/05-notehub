@@ -16,12 +16,13 @@ const NoteForm = ({ onSubmit, onClose }: NoteFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !content.trim()) return;
+    if (!title.trim()) return;
     onSubmit({ title, content, tag });
+
     setTitle("");
     setContent("");
     setTag("Todo");
-    onClose();
+    // onClose();
   };
 
   return (
