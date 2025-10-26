@@ -8,7 +8,6 @@ import SearchBox from "../SearchBox/SearchBox";
 import Pagination from "../Pagination/Pagination";
 import Modal from "../Modal/Modal";
 import { keepPreviousData } from "@tanstack/react-query";
-import "./App.css";
 
 function App() {
   const [page, setPage] = useState(1);
