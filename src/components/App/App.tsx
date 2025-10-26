@@ -8,6 +8,7 @@ import SearchBox from "../SearchBox/SearchBox";
 import Pagination from "../Pagination/Pagination";
 import Modal from "../Modal/Modal";
 import { keepPreviousData } from "@tanstack/react-query";
+import css from "./App.module.css"; // Добавляем импорт стилей
 
 function App() {
   const [page, setPage] = useState(1);
@@ -30,33 +31,34 @@ function App() {
   };
 
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>NoteHub</h1>
-        <button onClick={() => setIsModalOpen(true)}>Create Note</button>
-      </header>
+    <div className={css.app}>
+      <header className={css.toolbar}>
+        <SearchBox
+          value={search}
+          onChange={debouncedSearch}
+          onClear={() => {
+            setSearch("");
+            setPage(1);
+          }}
+        />
 
-      <SearchBox
-        value={search}
-        onChange={debouncedSearch}
-        onClear={() => {
-          setSearch("");
-          setPage(1);
-        }}
-      />
+        {data && data.totalPages > 1 && (
+          <Pagination
+            currentPage={page}
+            totalPages={data.totalPages}
+            onPageChange={handlePageChange}
+          />
+        )}
+
+        <button className={css.addButton} onClick={() => setIsModalOpen(true)}>
+          + Create Note
+        </button>
+      </header>
 
       {isLoading && <p>Loading...</p>}
       {isError && <p>Error: {error.message}</p>}
 
       <NoteList notes={data?.notes || []} />
-
-      {data && data.totalPages > 1 && (
-        <Pagination
-          currentPage={page}
-          totalPages={data.totalPages}
-          onPageChange={handlePageChange}
-        />
-      )}
 
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>
